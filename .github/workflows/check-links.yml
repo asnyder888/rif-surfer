@@ -1,0 +1,47 @@
+name: Check benefit links
+
+on:
+  schedule:
+    # Every Monday at 9am UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch: {}   # lets you also run it manually from the Actions tab
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Extract links from index.html
+        run: node scripts/extract-links.js index.html scripts/links.json
+
+      - name: Check each link
+        run: node scripts/check-links.js scripts/links.json scripts/results.json
+
+      - name: Open an issue if any links are broken
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('scripts/results.json', 'utf8'));
+            if (results.brokenCount === 0) {
+              console.log('All links OK, nothing to report.');
+              return;
+            }
+            const body = [
+              `Checked ${results.total} links on ${results.checkedAt}.`,
+              `${results.brokenCount} appear broken:`,
+              '',
+              ...results.broken.map(b => `- **${b.id}**: ${b.url} (status: ${b.status ?? 'error: ' + b.error})`)
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Broken benefit links found (${results.brokenCount})`,
+              body,
+              labels: ['broken-link']
+            });
