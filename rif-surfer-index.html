@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RIF Surfer — Layoff Benefits Finder</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --govuk-blue:#1D70B8;--govuk-blue-hover:#1A65A6;--govuk-blue-dark:#0F385C;
+  --govuk-blue-tint80:#D2E2F1;--govuk-blue-tint95:#F4F8FB;
+  --govuk-green:#0F7A52;--govuk-green-tint95:#F3F8F6;--govuk-green-dark:#083D29;
+  --govuk-text:#0B0C0C;--govuk-secondary-text:#484949;
+  --govuk-border-light:#CECECE;
+  --govuk-bg:#FFFFFF;--govuk-template-bg:#F0F2F5;
+  --govuk-link:#1A65A6;--govuk-link-hover:#0F385C;
+  --icon-bg:#E2E4E8;--icon-fg:#484949;
+  --turquoise:#0E7490;--turquoise-light:#E0F5F8;
+  --badge-urgent-bg:#F0C8C8;--badge-urgent-fg:#6B1A1A;
+  --badge-federal-bg:#D2E2F1;--badge-federal-fg:#0F385C;
+  --badge-state-bg:#FFF0C0;--badge-state-fg:#5C3D00;
+  --badge-free-bg:#D4EDDA;--badge-free-fg:#0A4A1E;
+  --badge-community-bg:#E8E0F8;--badge-community-fg:#3A1880;
+  --badge-crisis-bg:#FFE8CC;--badge-crisis-fg:#5C2E00;
+  --badge-bg:#E2E4E8;--badge-fg:#333333;
+  --pill-border:#767676;--input-border:#0B0C0C;
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color:var(--govuk-text);}
+.hero-inner{max-width:900px;margin:0 auto;padding:1.25rem 1.5rem 1.75rem;}
+.footer-inner{max-width:900px;margin:0 auto;padding:1.75rem 1.5rem;}
+.page-inner{max-width:900px;margin:0 auto;}
+.hero{background:var(--govuk-blue);}
+.hero-eyebrow{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#D4E6F5;font-weight:700;margin-bottom:8px;}
+.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:44px;font-weight:800;line-height:1.0;color:#fff;margin-bottom:8px;}
+.hero-tagline{font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:1.75rem;line-height:1.4;}
+.hero-tagline strong{color:rgba(255,255,255,0.9);font-weight:700;}
+.hero-state{display:flex;gap:8px;align-items:stretch;flex-wrap:nowrap;}
+.hero-state select{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:10px 36px 10px 12px;border:2px solid #fff;border-radius:4px;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23333' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat calc(100% - 12px) center;color:#0B0C0C;outline:none;flex:1;min-width:0;-webkit-appearance:none;-moz-appearance:none;appearance:none;}
+.hero-state select{box-shadow:none;-webkit-tap-highlight-color:transparent;}
+.hero-state select:focus{outline:3px solid #FFDD00;outline-offset:0;}
+.hero-state select option{background:#fff;}
+.hero-state-btn{padding:10px 14px;background:#fff;border:2px solid #fff;color:var(--govuk-blue);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:800;border-radius:4px;white-space:nowrap;flex-shrink:0;}
+.hero-state-btn:hover{background:var(--govuk-blue-tint95);border-color:var(--govuk-blue-tint95);}
+@media(max-width:480px){.hero-state-btn{font-size:12px;padding:10px 10px;}}
+.inner{padding:1.85rem 1.5rem 0;}
+.encouragement{background:var(--turquoise-light);border-left:3px solid var(--turquoise);border-radius:0 6px 6px 0;padding:0.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--turquoise);line-height:1.6;}
+.state-heading{font-size:28px;font-weight:700;color:var(--govuk-text);margin-bottom:0.85rem;line-height:1.2;}
+
+.tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;align-items:center;}
+.tab{padding:6px 14px;font-size:12px;font-weight:500;border:1.5px solid var(--pill-border);border-radius:20px;background:#fff;cursor:pointer;color:var(--govuk-secondary-text);transition:all 0.15s;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap;}
+.tab:hover{border-color:var(--govuk-blue);color:var(--govuk-blue);}
+.tab.active{background:var(--govuk-blue);color:#fff;border-color:var(--govuk-blue);font-weight:700;}
+.tab-search-spacer{flex:1;}
+.tab-search{display:flex;flex-shrink:0;}
+.tab-search-input{font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;padding:6px 12px;border:1.5px solid var(--govuk-border-light);border-right:none;border-radius:4px 0 0 4px;background:#fff;color:var(--govuk-text);outline:none;width:180px;}
+.tab-search-input:focus{outline:3px solid #FFDD00;outline-offset:0;}
+.tab-search-btn{padding:6px 12px;font-size:14px;}
+@media(max-width:600px){
+  .tab-search-spacer{display:none;}
+  .tab-search{width:100%;margin-top:6px;}
+  .tab-search-input{flex:1;width:auto;}
+}
+.card-section{background:var(--govuk-template-bg);border:1px solid var(--govuk-border-light);border-radius:4px;padding:1.25rem;margin-bottom:1rem;}
+.section-group{margin-bottom:1.75rem;}
+.section-group:last-child{margin-bottom:0;}
+.section-header{display:flex;align-items:baseline;gap:8px;margin-bottom:2px;}
+.section-header h3,.section-header-title{font-size:13px;font-weight:700;color:var(--govuk-text);text-transform:uppercase;letter-spacing:0.1em;margin:0;}
+.section-count{font-size:11px;color:var(--govuk-secondary-text);font-weight:500;}
+.section-desc{font-size:12.5px;color:var(--govuk-secondary-text);line-height:1.5;margin-bottom:0.75rem;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px;}
+.benefit-card{background:var(--govuk-bg);border:1px solid var(--govuk-border-light);border-radius:0;padding:1rem 1.25rem 1rem 1rem;position:relative;overflow:hidden;transition:border-color 0.15s,background 0.15s;}
+.benefit-card:hover{border-color:var(--govuk-blue);background:var(--govuk-blue-tint95);}
+.benefit-card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:4px;background:var(--govuk-blue);opacity:0;transition:opacity 0.15s;}
+.benefit-card:hover::before{opacity:1;}
+.card-icon{width:32px;height:32px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;background:var(--icon-bg);color:var(--icon-fg);}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.card-title{font-size:14px;font-weight:600;color:var(--govuk-text);line-height:1.3;}
+.card-sub{font-size:11px;color:var(--govuk-secondary-text);margin-top:2px;}
+.badge-row{display:flex;gap:5px;flex-wrap:wrap;padding-bottom:12px;border-bottom:1px solid var(--govuk-border-light);margin-bottom:12px;}
+.card-desc{font-size:12.5px;color:var(--govuk-secondary-text);line-height:1.65;margin-bottom:10px;}
+.badge{font-size:10.5px;padding:2px 7px;border-radius:0;font-weight:600;background:var(--badge-bg);color:var(--badge-fg);}
+.b-urgent{background:var(--badge-urgent-bg);color:var(--badge-urgent-fg);}
+.b-federal{background:var(--badge-federal-bg);color:var(--badge-federal-fg);}
+.b-state{background:var(--badge-state-bg);color:var(--badge-state-fg);}
+.b-free{background:var(--badge-free-bg);color:var(--badge-free-fg);}
+.b-community{background:var(--badge-community-bg);color:var(--badge-community-fg);}
+.b-crisis{background:var(--badge-crisis-bg);color:var(--badge-crisis-fg);}
+.card-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--govuk-link);text-decoration:underline;padding:0;border:none;background:transparent;transition:color 0.15s;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;}
+.card-link:hover{color:var(--govuk-link-hover);}
+.checklist-wrap{background:var(--govuk-template-bg);border:1px solid var(--govuk-border-light);border-radius:4px;padding:1.25rem;margin-bottom:1rem;margin-top:1.75rem;}
+.cl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;margin-top:0;}
+.cl-title{font-size:18px;font-weight:700;color:var(--govuk-text);}
+.cl-progress-text{font-size:12px;color:var(--govuk-secondary-text);}
+.progress-bar-wrap{background:#D8DBE0;height:8px;margin-bottom:1.25rem;overflow:hidden;border-radius:8px;}
+.progress-bar{height:8px;background:var(--govuk-blue);transition:width 0.5s cubic-bezier(.34,1.56,.64,1);border-radius:8px;}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--govuk-border-light);cursor:pointer;}
+.check-item:last-child{border-bottom:none;}
+.check-box{width:18px;height:18px;border:2px solid #767676;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;background:#fff;transition:all 0.15s;}
+.check-box.done{background:var(--govuk-blue);border-color:var(--govuk-blue);}
+.check-label{font-size:13px;color:var(--govuk-secondary-text);line-height:1.5;}
+.check-label.done{text-decoration:line-through;color:var(--govuk-border-light);}
+.all-done{display:none;background:var(--govuk-green-tint95);border-left:3px solid var(--govuk-green);padding:0.75rem 1rem;margin-top:12px;font-size:13px;color:var(--govuk-green-dark);font-weight:600;}
+.crisis-banner{background:#FFFBE6;border:1px solid #E0C840;border-left:4px solid #B8A000;padding:1.25rem 1.25rem;display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#5C3D00;line-height:1.6;margin-top:1.75rem;margin-bottom:1.75rem;}
+.crisis-banner a{color:var(--govuk-link);font-weight:600;}
+.empty{text-align:center;padding:2rem 1rem;color:var(--govuk-secondary-text);font-size:14px;}
+.footer{background:var(--govuk-blue);}
+.footer-title{font-size:20px;font-weight:700;color:#fff;margin-bottom:5px;}
+.footer-sub{font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.6;margin-bottom:1.25rem;max-width:480px;}
+.footer-actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem;}
+.footer-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;font-size:12.5px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;border-radius:4px;cursor:pointer;text-decoration:none;transition:all 0.15s;}
+.footer-btn-primary{background:#fff;color:var(--govuk-blue);border:2px solid #fff;}
+.footer-btn-primary:hover{background:var(--govuk-blue-tint95);}
+.footer-btn-secondary{background:transparent;color:#fff;border:2px solid rgba(255,255,255,0.4);}
+.footer-btn-secondary:hover{border-color:#fff;}
+.footer-divider{height:1px;background:rgba(255,255,255,0.15);margin-bottom:1rem;}
+.footer-meta{display:flex;flex-wrap:wrap;gap:16px;align-items:center;}
+.footer-meta-text{font-size:11.5px;color:rgba(255,255,255,0.75);}
+.footer-meta-link{font-size:11.5px;color:#fff;text-decoration:underline;cursor:pointer;}
+.footer-meta-link:hover{color:#fff;}
+@keyframes pop{0%{transform:scale(0.7)}100%{transform:scale(1)}}
+.check-box.done{animation:pop 0.2s cubic-bezier(.34,1.56,.64,1);}
+
+/* AI helper widget */
+.helper-fab{position:fixed;bottom:22px;right:22px;width:56px;height:56px;border-radius:50%;background:var(--govuk-blue);color:#fff;border:none;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;z-index:999;}
+.helper-fab:hover{background:var(--govuk-blue-dark,#1d3f6b);}
+.helper-panel{position:fixed;bottom:22px;right:22px;width:340px;max-width:calc(100vw - 32px);height:460px;max-height:calc(100vh - 100px);background:#fff;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.3);display:flex;flex-direction:column;overflow:hidden;z-index:1000;font-family:'Plus Jakarta Sans',sans-serif;}
+.helper-header{background:var(--govuk-blue);color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:14px;}
+.helper-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;padding:0;}
+.helper-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#f7f8f9;}
+.helper-msg{max-width:88%;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.4;}
+.helper-msg-bot{background:#fff;border:1px solid var(--govuk-border-light);color:var(--govuk-text);align-self:flex-start;}
+.helper-msg-user{background:var(--govuk-blue);color:#fff;align-self:flex-end;}
+.helper-card{background:#fff;border:1px solid var(--govuk-border-light);border-radius:8px;padding:10px;margin-top:6px;}
+.helper-card-title{font-weight:700;font-size:13px;color:var(--govuk-text);margin-bottom:2px;}
+.helper-card-desc{font-size:12px;color:var(--govuk-secondary-text);margin-bottom:6px;line-height:1.4;}
+.helper-card-link{font-size:12px;font-weight:700;color:var(--govuk-link);text-decoration:none;}
+.helper-card-link:hover{text-decoration:underline;}
+.helper-input-row{display:flex;border-top:1px solid var(--govuk-border-light);padding:10px;gap:8px;}
+.helper-input-row input{flex:1;border:1.5px solid var(--govuk-border-light);border-radius:20px;padding:9px 14px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;}
+.helper-input-row input:focus{border-color:var(--govuk-blue);}
+.helper-input-row button{width:36px;height:36px;border-radius:50%;border:none;background:var(--govuk-blue);color:#fff;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+
+@media(max-width:600px){
+  /* hero */
+  .hero-inner{padding:1rem 1rem;}
+  .hero h1{font-size:38px;}
+  .hero-tagline{font-size:12px;margin-bottom:1rem;}
+
+  /* inner padding */
+  .inner{padding:0.75rem 1rem 0;}
+
+  /* encouragement */
+  .encouragement{font-size:12px;padding:0.6rem 0.75rem;}
+
+  /* tabs — search drops below on mobile */
+  .tabs{flex-wrap:wrap;}
+  .tabs div[style*="flex:1"]{display:none;}
+  .tabs div[style*="flex-shrink:0"]{width:100%;margin-top:6px;}
+  .tabs div[style*="flex-shrink:0"] input{width:100% !important;flex:1;}
+
+  /* cards — single column, full width backgrounds */
+  .card-grid{grid-template-columns:1fr;}
+  .card-section{padding:1rem;}
+  .section-group{margin-left:-1rem;margin-right:-1rem;border-radius:0;}
+  .inner{padding-left:0;padding-right:0;}
+  .page-inner{padding-left:0;padding-right:0;}
+  .section-header,.section-desc{padding-left:1rem;padding-right:1rem;}
+  .card-grid{padding:0 1rem;}
+  /* tabs and search padding on mobile */
+  .tabs{padding-left:1rem;padding-right:1rem;}
+
+  /* AI helper widget on small screens */
+  .helper-panel{width:calc(100vw - 24px);right:12px;bottom:12px;height:calc(100vh - 90px);}
+  .helper-fab{bottom:16px;right:16px;}
+
+  /* state heading */
+  .state-heading{font-size:22px;}
+
+  /* checklist */
+  .cl-title{font-size:16px;}
+  .check-label{font-size:12px;}
+
+  /* footer */
+  .footer{padding:1.25rem 1rem;}
+  .footer-actions{flex-direction:column;}
+  .footer-btn{width:100%;justify-content:center;}
+  .footer-meta{flex-direction:column;gap:8px;}
+  .footer-sub{font-size:12px;}
+
+  /* crisis banner */
+  .crisis-banner{font-size:12px;}
+}
+</style>
+<script defer data-domain="rif-surfer.netlify.app" src="https://plausible.io/js/script.js"></script>
+</head>
+<body>
+<main>
+<div class="hero"><div class="hero-inner">
+  <div class="hero-eyebrow">Layoff support tool</div>
+  <h1>RIF Surfer.</h1>
+  <p class="hero-tagline">Benefits and support available to you <strong>right now</strong>, by state.</p>
+  <div class="hero-state">
+    <label for="stateSelect" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Select your state</label>
+    <select id="stateSelect" onchange="update()" aria-label="Select your state" autocomplete="off">
+      <option value="">Select your state...</option>
+      <option value="AL">Alabama</option>
+      <option value="AK">Alaska</option>
+      <option value="AZ">Arizona</option>
+      <option value="AR">Arkansas</option>
+      <option value="CA">California</option>
+      <option value="CO">Colorado</option>
+      <option value="CT">Connecticut</option>
+      <option value="DE">Delaware</option>
+      <option value="FL">Florida</option>
+      <option value="GA">Georgia</option>
+      <option value="HI">Hawaii</option>
+      <option value="ID">Idaho</option>
+      <option value="IL">Illinois</option>
+      <option value="IN">Indiana</option>
+      <option value="IA">Iowa</option>
+      <option value="KS">Kansas</option>
+      <option value="KY">Kentucky</option>
+      <option value="LA">Louisiana</option>
+      <option value="ME">Maine</option>
+      <option value="MD">Maryland</option>
+      <option value="MA">Massachusetts</option>
+      <option value="MI">Michigan</option>
+      <option value="MN">Minnesota</option>
+      <option value="MS">Mississippi</option>
+      <option value="MO">Missouri</option>
+      <option value="MT">Montana</option>
+      <option value="NE">Nebraska</option>
+      <option value="NV">Nevada</option>
+      <option value="NH">New Hampshire</option>
+      <option value="NJ">New Jersey</option>
+      <option value="NM">New Mexico</option>
+      <option value="NY">New York</option>
+      <option value="NC">North Carolina</option>
+      <option value="ND">North Dakota</option>
+      <option value="OH">Ohio</option>
+      <option value="OK">Oklahoma</option>
+      <option value="OR">Oregon</option>
+      <option value="PA">Pennsylvania</option>
+      <option value="RI">Rhode Island</option>
+      <option value="SC">South Carolina</option>
+      <option value="SD">South Dakota</option>
+      <option value="TN">Tennessee</option>
+      <option value="TX">Texas</option>
+      <option value="UT">Utah</option>
+      <option value="VT">Vermont</option>
+      <option value="VA">Virginia</option>
+      <option value="WA">Washington</option>
+      <option value="WV">West Virginia</option>
+      <option value="WI">Wisconsin</option>
+      <option value="DC">Washington D.C.</option>
+      <option value="WY">Wyoming</option>
+      <option value="other">Other / US Territory</option>
+    </select>
+    <button class="hero-state-btn" onclick="update();document.querySelector('.inner').scrollIntoView({behavior:'smooth'})">Find My Benefits →</button>
+  </div>
+</div></div>
+
+<div class="page-inner"><div class="inner">
+
+<h2 class="state-heading" id="stateHeading" style="display:none;"></h2>
+<div class="tabs" style="align-items:center;">
+  <button class="tab active" onclick="setTab('all',this)">All</button>
+  <button class="tab" onclick="setTab('income',this)">Income</button>
+  <button class="tab" onclick="setTab('health',this)">Health</button>
+  <button class="tab" onclick="setTab('family',this)">Family</button>
+  <button class="tab" onclick="setTab('housing',this)">Housing</button>
+  <button class="tab" onclick="setTab('work',this)">Job search</button>
+  <button class="tab" onclick="setTab('wellness',this)">Wellness</button>
+  <div class="tab-search-spacer"></div>
+  <div class="tab-search">
+    <input type="text" id="searchInput" placeholder="Search..." oninput="update()" class="tab-search-input" />
+    <button class="search-btn tab-search-btn" aria-label="Search"><i class="ti ti-search" aria-hidden="true"></i></button>
+  </div>
+</div>
+<div class="card-section">
+  <div id="cardGrid"></div>
+  <div id="emptyState" class="empty" style="display:none;">No matching programs. Try a different filter or search.</div>
+</div>
+<div class="checklist-wrap">
+  <div class="cl-header">
+    <div class="cl-title">Your first-week checklist</div>
+    <div class="cl-progress-text" id="progressText">0 of 7</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  <div id="checkItems"></div>
+  <div class="all-done" id="allDone">You've covered all the bases. Nice work.</div>
+</div>
+<div class="crisis-banner">
+  <i class="ti ti-phone" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px;"></i>
+  <span>If you're feeling overwhelmed, you're not alone. <a href="https://988lifeline.org" target="_blank">988 Suicide and Crisis Lifeline</a> — call or text 988, free and confidential, 24/7. <a href="https://www.crisistextline.org" target="_blank">Crisis Text Line</a> — text HOME to 741741.</span>
+</div>
+</div>
+
+</div>
+<div style="background:#E0F5F8;border-top:1px solid #B2E0EA;border-bottom:1px solid #B2E0EA;">
+  <div class="page-inner"><div style="padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div style="font-size:13px;color:#484949;">Get updates when new resources are added. <span style="font-weight:700;color:#0B0C0C;">RIF Surfer is growing.</span></div>
+    <a href="https://amandas-newsletter-33cba7.beehiiv.com/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;padding:9px 14px;background:#1D70B8;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;text-decoration:none;white-space:nowrap;border-radius:4px;"><i class="ti ti-mail"></i> Stay in the loop →</a>
+  </div></div>
+</div>
+</main>
+<div class="footer"><div class="footer-inner">
+  <div class="footer-title">This community is yours to build.</div>
+  <div class="footer-sub">Know a resource that should be here? Spotted something out of date?<br>This tool gets better when people who've been through it help make it better.</div>
+  <div class="footer-actions">
+    <a class="footer-btn footer-btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfq5aB0AlV9sjGEyL4qyV_q0gLvPBZjkuGefRHL4W3Ikhl2yw/viewform?usp=publish-editor" target="_blank"><i class="ti ti-plus" aria-hidden="true"></i> Suggest a resource</a>
+    <a class="footer-btn footer-btn-secondary" href="https://docs.google.com/forms/d/e/1FAIpQLScWAY2m7q6EygzSgi8T2DTjytpdiQ7Ht_cvhd4xw_JlClaITw/viewform?usp=publish-editor" target="_blank"><i class="ti ti-flag" aria-hidden="true"></i> Report an issue</a>
+    <button class="footer-btn footer-btn-secondary" onclick="if(navigator.share){navigator.share({title:'RIF Surfer',url:window.location.href})}else{navigator.clipboard.writeText(window.location.href).then(()=>alert('Link copied!'))}"><i class="ti ti-share" aria-hidden="true"></i> Share this tool</button>
+  </div>
+    <div class="footer-divider"></div>
+  <div style="text-align:left;padding:1.25rem 0;">
+    <p style="font-size:13px;color:#fff;margin-bottom:12px;">Found this helpful? Help keep RIF Surfer free and up to date.</p>
+    <a href="https://buymeacoffee.com/amandacathey" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;background:#FFDD00;color:#000;font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:600;padding:9px 14px;border-radius:4px;text-decoration:none;">
+      <span style="font-size:14px;">☕</span> Buy me a coffee
+    </a>
+  </div>
+  <div class="footer-meta">
+    <span class="footer-meta-text">&copy; 2026 RIF Surfer. Built by a designer who got laid off. Free, always.</span>
+    <a class="footer-meta-link" href="mailto:asnyder9@gmail.com">asnyder9@gmail.com</a>
+  </div>
+</div></div>
+
+<button id="helperFab" class="helper-fab" aria-label="Get help finding benefits" onclick="toggleHelper()">
+  <i class="ti ti-message-circle-2" aria-hidden="true"></i>
+</button>
+<div id="helperPanel" class="helper-panel" style="display:none;" role="dialog" aria-label="Find what you need">
+  <div class="helper-header">
+    <span>Find what you need</span>
+    <button class="helper-close" onclick="toggleHelper()" aria-label="Close">&times;</button>
+  </div>
+  <div class="helper-messages" id="helperMessages">
+    <div class="helper-msg helper-msg-bot">Tell me what's going on and I'll point you to programs that can help. For example: "I need help paying rent" or "my kids need health insurance."</div>
+  </div>
+  <div class="helper-input-row">
+    <input type="text" id="helperInput" placeholder="What do you need help with?" autocomplete="off" onkeydown="if(event.key==='Enter')sendHelperMessage()">
+    <button onclick="sendHelperMessage()" aria-label="Send"><i class="ti ti-send" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<script>
+const stateLinks={
+AL:{ui:'https://uiclaimantportal.labor.alabama.gov/',medicaid:'https://medicaid.alabama.gov/',snap:'https://dhr.alabama.gov/food-assistance/'},
+AK:{ui:'https://labor.alaska.gov/unemployment/',medicaid:'https://health.alaska.gov/en/services/division-of-public-assistance-dpa-services/apply-for-medicaid/',snap:'https://health.alaska.gov/en/services/division-of-public-assistance-dpa-services/snap-nutrition-assistance/'},
+AZ:{ui:'https://des.az.gov/services/employment/unemployment-individual',medicaid:'https://healthearizonaplus.gov/',snap:'https://des.az.gov/services/basic-needs/nutrition-assistance-snap'},
+AR:{ui:'https://www.dws.arkansas.gov/unemployment/',medicaid:'https://medicaid.mmis.arkansas.gov/',snap:'https://humanservices.arkansas.gov/about-dhs/dco/benefits-families-programs/snap/'},
+CA:{ui:'https://edd.ca.gov/en/unemployment/',medicaid:'https://www.coveredca.com/',snap:'https://www.cdss.ca.gov/calfresh'},
+CO:{ui:'https://coloradoui.gov/',medicaid:'https://hcpf.colorado.gov/colorado-medicaid',snap:'https://cdhs.colorado.gov/snap'},
+CT:{ui:'https://www.ctdol.state.ct.us/UI-Online/',medicaid:'https://www.ct.gov/dss/cwp/view.asp?a=2353&q=305172',snap:'https://www.ct.gov/dss/snap'},
+DE:{ui:'https://ui.delawareworks.com/',medicaid:'https://dhss.delaware.gov/dmma/',snap:'https://dhss.delaware.gov/dss/division-of-social-services/snap/'},
+FL:{ui:'https://connect.myflorida.com/Claimant/Core/Login.ASPX',medicaid:'https://www.myflfamilies.com/services/public-assistance/applying-for-assistance',snap:'https://www.myflfamilies.com/services/public-assistance/supplemental-nutrition-assistance-program-snap'},
+GA:{ui:'https://dol.georgia.gov/file-unemployment-insurance-claim',medicaid:'https://medicaid.georgia.gov/',snap:'https://dfcs.georgia.gov/snap'},
+HI:{ui:'https://uiclaims.hawaii.gov/',medicaid:'https://medquest.hawaii.gov/',snap:'https://humanservices.hawaii.gov/bessd/snap/'},
+ID:{ui:'https://www.labor.idaho.gov/dnn/Unemployment/',medicaid:'https://healthandwelfare.idaho.gov/services-programs/medicaid-health/apply-medicaid',snap:'https://healthandwelfare.idaho.gov/services-programs/food-assistance/apply-snap'},
+IL:{ui:'https://ides.illinois.gov/unemployment/file-a-claim.html',medicaid:'https://hfs.illinois.gov/medicalclients/medicaidguide/applying.html',snap:'https://www.dhs.state.il.us/page.aspx?item=30357'},
+IN:{ui:'https://www.in.gov/dwd/indiana-unemployment/',medicaid:'https://www.in.gov/medicaid/',snap:'https://www.in.gov/fssa/dfr/snap-food-assistance/'},
+IA:{ui:'https://www.iowaworkforcedevelopment.gov/unemployment-insurance',medicaid:'https://dhs.iowa.gov/ime/members',snap:'https://dhs.iowa.gov/food-assistance'},
+KS:{ui:'https://www.dol.ks.gov/unemployment',medicaid:'https://www.kancare.ks.gov/',snap:'https://www.dcf.ks.gov/services/ees/pages/foodassistance.aspx'},
+KY:{ui:'https://kcc.ky.gov/career/pages/default.aspx',medicaid:'https://chfs.ky.gov/agencies/dms/Pages/default.aspx',snap:'https://kynect.ky.gov'},
+LA:{ui:'https://www.laworks.net/UnemploymentInsurance/',medicaid:'https://ldh.la.gov/medicaid',snap:'https://www.dcfs.louisiana.gov/snap'},
+ME:{ui:'https://www.maine.gov/unemployment/',medicaid:'https://www.maine.gov/dhhs/ofi/programs-services/health-care-assistance',snap:'https://www.maine.gov/dhhs/ofi/programs-services/food-supplement'},
+MD:{ui:'https://www.dllr.state.md.us/employment/unemployment.shtml',medicaid:'https://mmcp.health.maryland.gov/',snap:'https://dhs.maryland.gov/food-supplement-program/'},
+MA:{ui:'https://www.mass.gov/how-to/apply-for-unemployment-insurance-benefits',medicaid:'https://www.mass.gov/masshealth',snap:'https://www.mass.gov/snap'},
+MI:{ui:'https://www.michigan.gov/leo/bureaus-agencies/uia/uia-resources-for-claimants',medicaid:'https://www.michigan.gov/mdhhs/assistance-programs/medicaid',snap:'https://www.michigan.gov/mdhhs/assistance-programs/food-assistance'},
+MN:{ui:'https://www.uimn.org/applicants/howapply/index.jsp',medicaid:'https://mn.gov/dhs/people-we-serve/adults/health-care/health-care-programs/',snap:'https://mn.gov/dhs/people-we-serve/adults/economic-support/food-cash/'},
+MS:{ui:'https://mdes.ms.gov/unemployment-claims/',medicaid:'https://medicaid.ms.gov/',snap:'https://www.mdhs.ms.gov/economic-assistance/snap/'},
+MO:{ui:'https://labor.mo.gov/unemployed-workers',medicaid:'https://dss.mo.gov/mhd/',snap:'https://mydss.mo.gov/food-assistance/apply-for-snap'},
+MT:{ui:'https://uid.dli.mt.gov/',medicaid:'https://dphhs.mt.gov/MontanaHealthcarePrograms/',snap:'https://dphhs.mt.gov/hcsd/SNAP/'},
+NE:{ui:'https://www.dol.nebraska.gov/UIBenefits/',medicaid:'https://dhhs.ne.gov/Pages/Medicaid.aspx',snap:'https://dhhs.ne.gov/Pages/SNAP.aspx'},
+NV:{ui:'https://ui.nv.gov/',medicaid:'https://dhcfp.nv.gov/',snap:'https://dwss.nv.gov/snap/'},
+NH:{ui:'https://www.nhes.nh.gov/services/individuals/unemployed.htm',medicaid:'https://www.dhhs.nh.gov/programs-services/medicaid',snap:'https://www.dhhs.nh.gov/programs-services/food-nutrition'},
+NJ:{ui:'https://www.myunemployment.nj.gov/',medicaid:'https://www.state.nj.us/humanservices/dmahs/home/',snap:'https://www.nj.gov/humanservices/dfd/programs/njsnap/'},
+NM:{ui:'https://www.dws.state.nm.us/Unemployment-Insurance',medicaid:'https://www.hsd.state.nm.us/lookingforassistance/medicaid/',snap:'https://www.hsd.state.nm.us/lookingforassistance/snap/'},
+NY:{ui:'https://applications.labor.ny.gov/IndividualReg/',medicaid:'https://www.health.ny.gov/health_care/medicaid/',snap:'https://otda.ny.gov/programs/snap/'},
+NC:{ui:'https://des.nc.gov/need-help/unemployment-insurance',medicaid:'https://medicaid.ncdhhs.gov/',snap:'https://www.ncdhhs.gov/assistance/low-income-services/food-and-nutrition-services'},
+ND:{ui:'https://www.jobsnd.com/unemployment-individuals',medicaid:'https://www.hhs.nd.gov/healthcare/medicaid',snap:'https://www.hhs.nd.gov/snap'},
+OH:{ui:'https://jfs.ohio.gov/unemployment/',medicaid:'https://medicaid.ohio.gov/',snap:'https://jfs.ohio.gov/snap/'},
+OK:{ui:'https://unemployment.ok.gov/',medicaid:'https://oklahoma.gov/ohca.html',snap:'https://oklahoma.gov/okdhs/programs/snap.html'},
+OR:{ui:'https://unemployment.oregon.gov/apply',medicaid:'https://www.oregon.gov/oha/medicaid/pages/index.aspx',snap:'https://www.oregon.gov/odhs/food/pages/snap.aspx'},
+PA:{ui:'https://www.uc.pa.gov/unemployment-benefits/file/Pages/default.aspx',medicaid:'https://pennie.com/',snap:'https://www.dhs.pa.gov/Services/Assistance/Pages/SNAP.aspx'},
+RI:{ui:'https://dlt.ri.gov/individuals/unemployment-insurance',medicaid:'https://eohhs.ri.gov/programs-and-services/medicaid',snap:'https://dhs.ri.gov/programs-and-services/food-assistance/snap'},
+SC:{ui:'https://dew.sc.gov/individuals/file-for-unemployment',medicaid:'https://www.scdhhs.gov/',snap:'https://www.sc.gov/residents/benefits/snap'},
+SD:{ui:'https://dlr.sd.gov/ra/',medicaid:'https://dss.sd.gov/medicaid/',snap:'https://dss.sd.gov/snap/'},
+TN:{ui:'https://www.tn.gov/workforce/unemployment.html',medicaid:'https://www.tn.gov/tenncare.html',snap:'https://www.tn.gov/humanservices/for-families/families-first-program/snap.html'},
+TX:{ui:'https://www.twc.texas.gov/jobseekers/apply-unemployment-benefits-online',medicaid:'https://hhs.texas.gov/your-texas-benefits',snap:'https://hhs.texas.gov/your-texas-benefits'},
+UT:{ui:'https://jobs.utah.gov/ui/home',medicaid:'https://medicaid.utah.gov/',snap:'https://jobs.utah.gov/asp/'},
+VT:{ui:'https://labor.vermont.gov/unemployment-insurance',medicaid:'https://dvha.vermont.gov/members',snap:'https://dcf.vermont.gov/esd/snap'},
+VA:{ui:'https://www.vec.virginia.gov/unemployed/online-ins/',medicaid:'https://www.dmas.virginia.gov/',snap:'https://www.dss.virginia.gov/benefit/snap.cgi'},
+WA:{ui:'https://esd.wa.gov/unemployment/apply',medicaid:'https://www.wahealthplanfinder.org/',snap:'https://www.dshs.wa.gov/esa/community-services-offices/basic-food'},
+WV:{ui:'https://workforcewv.org/unemployment',medicaid:'https://dhhr.wv.gov/bms/Pages/default.aspx',snap:'https://dhhr.wv.gov/bcf/snap/Pages/default.aspx'},
+WI:{ui:'https://dwd.wisconsin.gov/uiben/',medicaid:'https://www.dhs.wisconsin.gov/badgercareplus/',snap:'https://www.dhs.wisconsin.gov/foodshare/'},
+WY:{ui:'https://wyomingworkforce.org/workers/ui/',medicaid:'https://health.wyo.gov/healthcarefin/medicaid/',snap:'https://dfs.wyo.gov/assistance-services/snap/'},DC:{ui:'https://does.dc.gov/page/file-claim',medicaid:'https://dhs.dc.gov/service/medicaid',snap:'https://dhs.dc.gov/service/food-stamp-program'},
+other:{ui:'https://www.careeronestop.org/LocalHelp/UnemploymentBenefits/find-unemployment-benefits.aspx',medicaid:'https://www.healthcare.gov/medicaid-chip/',snap:'https://www.fns.usda.gov/snap/state-directory'}};
+const stateNames={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'Washington D.C.',other:'your state'};
+const catMeta={income:{label:'Income support',desc:'Replace lost wages and manage existing financial obligations.'},health:{label:'Healthcare',desc:'Keep your coverage or find affordable options right away.'},family:{label:'Family and food',desc:'Food assistance and health coverage for your household.'},housing:{label:'Housing and utilities',desc:'Help with rent, energy bills, and keeping a roof over your head.'},work:{label:'Job search',desc:'Free tools, training, and community to help you find work.'},wellness:{label:'Wellness and mental health',desc:'Job loss is hard. Free and low-cost support for when you need it.'}};
+const catOrder=['income','health','family','housing','work','wellness'];
+const benefits=[
+  {id:'ui',cat:'income',title:'Unemployment Insurance',sub:'Unemployment Insurance',icon:'ti-cash',urgent:true,state:true,desc:'Replace a portion of lost wages while you search. File within days of your last day. Most states allow one week retroactive. Severance does NOT disqualify you — apply anyway.',link:'ui',lt:'File now →'},
+  {id:'loans',cat:'income',title:'Student loan income-driven plans',sub:'',icon:'ti-credit-card',fed:true,free:true,desc:'Federal student loans can go to $0 per month when unemployed. Use the SAVE plan calculator or call your servicer.',link:'https://studentaid.gov/manage-loans/repayment/plans/income-driven',lt:'Explore IDR plans →'},
+  {id:'costplus',cat:'health',title:'Cost Plus Drugs',sub:'Affordable prescriptions',icon:'ti-pill',free:true,desc:'Mark Cuban\'s pharmacy sells generic medications at cost plus 15%. Dramatically cheaper than retail for hundreds of common drugs. No insurance needed.',link:'https://costplusdrugs.com',lt:'Browse medications →'},
+  {id:'goodrx',cat:'health',title:'GoodRx',sub:'Free prescription discount card',icon:'ti-receipt',free:true,desc:'Free discount card accepted at nearly every pharmacy. Can reduce prescription costs by up to 80%. Works with or without insurance.',link:'https://www.goodrx.com',lt:'Get free card →'},
+  {id:'cobra',cat:'health',title:'COBRA health coverage',sub:'60-day window to enroll',icon:'ti-heart-rate-monitor',urgent:true,fed:true,desc:'Keep your existing employer health plan for up to 18 months. You pay full premium but keep your doctors. Clock starts day one.',link:'https://www.dol.gov/general/topic/health-plans/cobra',lt:'Learn about COBRA →'},
+  {id:'aca',cat:'health',title:'ACA marketplace plan',sub:'Special enrollment period',icon:'ti-stethoscope',urgent:true,fed:true,desc:'Being laid off triggers a 60-day Special Enrollment Period. Subsidies may make coverage much cheaper than you expect. Pennsylvania residents: use Pennie, the state marketplace, for excellent local coverage.',link:'medicaid',lt:'Browse plans →'},
+  {id:'medicaid',cat:'health',title:'Medicaid',sub:'',icon:'ti-plus',state:true,free:true,desc:'Free or very low-cost coverage if income dropped significantly. Open enrollment year-round with no waiting period in most states.',link:'medicaid',lt:'Check eligibility →'},
+  {id:'snap',cat:'family',title:'SNAP food assistance',sub:'',icon:'ti-shopping-cart',fed:true,state:true,free:true,desc:'Monthly grocery funds on an EBT card. Based on household size. Apply as soon as your income changes — don\'t wait until you\'re in crisis. Processing can take a few days, and social workers are available to help you through it.',link:'snap',lt:'Apply for SNAP →'},
+  {id:'chip',cat:'family',title:"CHIP, kids' health coverage",sub:'',icon:'ti-users',fed:true,state:true,free:true,desc:"Low or no-cost health coverage for children. Your kids may qualify even if you don't. No enrollment period restrictions.",link:'https://www.insurekidsnow.gov/',lt:'Check eligibility →'},
+  {id:'wic',cat:'family',title:'WIC nutrition program',sub:'',icon:'ti-apple',fed:true,free:true,desc:'Food support for pregnant women, new mothers, and children under 5. Thresholds are more generous than many expect.',link:'https://www.fna.usda.gov/wic/program-contacts',lt:'Find a WIC office →'},
+  {id:'liheap',cat:'housing',title:'Energy bill assistance',sub:'Energy assistance',icon:'ti-bolt',fed:true,free:true,desc:'Help paying heating and cooling bills. Eligibility expands when unemployed. Apply through a local community action agency.',link:'https://www.acf.hhs.gov/ocs/programs/liheap',lt:'Find local agency →'},
+  {id:'rental',cat:'housing',title:'Emergency rental assistance',sub:'',icon:'ti-home',state:true,free:true,desc:'Many cities and counties help cover rent when income drops suddenly. Search your city name plus "rental assistance."',link:'https://www.consumerfinance.gov/renthelp/',lt:'Search programs →'},
+  {id:'ajc',cat:'work',title:'American Job Centers',sub:'',icon:'ti-briefcase',fed:true,free:true,desc:'Free help with job searching, resume writing, skills training, and interview workshops. In person or virtual.',link:'https://www.careeronestop.org/localhelp/americanjobcenters/find-american-job-centers.aspx',lt:'Find a center →'},
+  {id:'pell',cat:'work',title:'Retraining grants',sub:'TAA and Pell grants',icon:'ti-school',fed:true,free:true,desc:'Being laid off can qualify you for federal grants to cover tuition for new skills or a degree program.',link:'https://www.dol.gov/agencies/eta/tradeact',lt:'Explore grants →'},
+  {id:'nsa',cat:'work',title:'Never Search Alone',sub:'',icon:'ti-users-group',free:true,community:true,desc:'Free peer job search groups where you meet weekly with a small cohort, set goals, and hold each other accountable.',link:'https://www.neversearchalone.com',lt:'Join a group →'},
+  {id:'linkedin-groups',cat:'work',title:'LinkedIn job seeker groups',sub:'',icon:'ti-brand-linkedin',free:true,community:true,desc:'Search LinkedIn Groups for your industry plus "job seekers" or "career transition." Active communities share leads, referrals, and encouragement.',link:'https://www.linkedin.com/groups/',lt:'Find a group →'},
+  {id:'tpj',cat:'work',title:'Teal job search community',sub:'',icon:'ti-target',free:true,community:true,desc:'Free job search tracker, AI tools, and an active community of people navigating career transitions together.',link:'https://www.tealhq.com',lt:'Explore Teal →'},
+  {id:'988',cat:'wellness',title:'988 Crisis and mental health line',sub:'24/7',icon:'ti-phone',fed:true,free:true,crisis:true,desc:'Call or text 988 for free, confidential mental health support. Job loss is a major life stressor. Reaching out is a sign of strength.',link:'https://988lifeline.org',lt:'Learn more →'},
+  {id:'openpath',cat:'wellness',title:'Open Path Collective',sub:'Affordable therapy',icon:'ti-mood-happy',desc:'Therapy sessions for $30 to $80 with licensed therapists. Designed for people who are uninsured or underinsured.',link:'https://openpathcollective.org',lt:'Find a therapist →'},
+  {id:'nami',cat:'wellness',title:'NAMI helpline',sub:'Peer support',icon:'ti-heart-handshake',free:true,desc:'Free mental health information, referrals, and peer support. Call 1-800-950-6264 or text "NAMI" to 741741.',link:'https://www.nami.org/help',lt:'Get support →'},
+  {id:'crisis-text',cat:'wellness',title:'Crisis Text Line',sub:'24/7 text support',icon:'ti-message',free:true,crisis:true,desc:'Text HOME to 741741 to connect with a trained crisis counselor. Free, confidential, available anytime.',link:'https://www.crisistextline.org',lt:'Learn more →'},
+  {id:'va-tap',cat:'work',title:'VA Transition Assistance Program',sub:'Career support for veterans',icon:'ti-shield',fed:true,free:true,desc:'Free job search, resume, and career transition support specifically for veterans leaving service or facing unemployment. Includes workshops and one-on-one counseling.',link:'https://www.dol.gov/agencies/vets/programs/tap',lt:'Learn about TAP →'},
+  {id:'va-health',cat:'health',title:'VA healthcare coverage',sub:'For eligible veterans',icon:'ti-heart-rate-monitor',fed:true,free:true,desc:'Veterans may be eligible for VA healthcare regardless of employment status. Coverage includes mental health, primary care, and specialty services.',link:'https://www.va.gov/health-care/apply-for-health-care-form-10-10ez/',lt:'Apply for VA healthcare →'},
+  {id:'va-benefits',cat:'income',title:'VA financial assistance',sub:'For eligible veterans',icon:'ti-cash',fed:true,free:true,desc:'Veterans may qualify for disability compensation, pension, and other financial support programs through the VA. Benefits are not affected by civilian job loss.',link:'https://www.va.gov/benefits/',lt:'Explore VA benefits →'},
+  {id:'alanon',cat:'wellness',title:'Al-Anon family groups',sub:'Peer-led groups',icon:'ti-circle-dashed',free:true,community:true,desc:"Free support for anyone affected by someone else's drinking. Financial stress and job loss can affect whole families. In-person and online meetings available worldwide.",link:'https://al-anon.org/al-anon-meetings/',lt:'Find a meeting →'},
+];
+const checks=['File for unemployment insurance (do this first)','Note your official last day of employment','Elect COBRA or explore ACA coverage within 60 days','Check eligibility for SNAP, Medicaid, and CHIP','Update your LinkedIn profile and resume','Contact your local American Job Center for free help','Review any severance agreement carefully'];
+let activeTab='all',checked={};
+function setTab(t,el){activeTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');update();}
+function getLink(b,state){if(b.link&&b.link.startsWith('http'))return b.link;const s=state&&stateLinks[state]?state:'other';return stateLinks[s][b.link]||stateLinks['other'][b.link]||'#';}
+function cardHTML(b,state){return `<div class="benefit-card"><div class="card-top"><div class="card-icon"><i class="ti ${b.icon}" aria-hidden="true"></i></div><div><div class="card-title">${b.title}</div><div class="card-sub">${b.sub||''}</div></div></div><div class="badge-row">${b.urgent?'<span class="badge b-urgent">Act within 60 days</span>':''}${b.crisis?'<span class="badge b-crisis">Crisis support</span>':''}${b.community?'<span class="badge b-community">Community</span>':''}${b.fed?'<span class="badge b-federal">Federal</span>':''}${b.state?'<span class="badge b-state">State</span>':''}${b.free?'<span class="badge b-free">Free</span>':''}</div><div class="card-desc">${b.desc}</div><a class="card-link" href="${getLink(b,state)}" target="_blank" rel="noopener" aria-label="${b.lt.replace('→','').trim()} — ${b.title}">${b.lt}</a></div>`;}
+function update(){
+  const state=document.getElementById('stateSelect').value;
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const heading=document.getElementById('stateHeading');
+  if(state){heading.style.display='block';heading.textContent=stateNames[state]||'Your state';}
+  else heading.style.display='none';
+  const filtered=benefits.filter(b=>{if(activeTab!=='all'&&b.cat!==activeTab)return false;if(q&&!(b.title.toLowerCase().includes(q)||b.desc.toLowerCase().includes(q)))return false;return true;});
+  const grid=document.getElementById('cardGrid');
+  const empty=document.getElementById('emptyState');
+  if(!filtered.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  if(activeTab!=='all'||q){grid.innerHTML=`<div class="card-grid">${filtered.map(b=>cardHTML(b,state)).join('')}</div>`;}
+  else{let html='';catOrder.forEach(cat=>{const items=filtered.filter(b=>b.cat===cat);if(!items.length)return;const meta=catMeta[cat];html+=`<div class="section-group"><div class="section-header"><h2 class="section-header-title">${meta.label}</h2><span class="section-count">${items.length} program${items.length>1?'s':''}</span></div><p class="section-desc">${meta.desc}</p><div class="card-grid">${items.map(b=>cardHTML(b,state)).join('')}</div></div>`;});grid.innerHTML=html;}
+}
+function renderChecklist(){
+  const done=Object.values(checked).filter(Boolean).length;
+  const pct=Math.round((done/checks.length)*100);
+  document.getElementById('progressText').textContent=done+' of '+checks.length;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('allDone').style.display=done===checks.length?'block':'none';
+  document.getElementById('checkItems').innerHTML=checks.map((c,i)=>`<div class="check-item" onclick="toggleCheck(${i})"><div class="check-box${checked[i]?' done':''}">${checked[i]?'<i class="ti ti-check" aria-hidden="true" style="font-size:11px;color:#fff;"></i>':''}</div><span class="check-label${checked[i]?' done':''}">${c}</span></div>`).join('');
+}
+function toggleCheck(i){checked[i]=!checked[i];renderChecklist();}
+
+/* ---------- AI helper (local smart search, no API needed) ----------
+   To upgrade later to a real Claude-powered chat: keep everything below,
+   but replace the body of sendHelperMessage() with a fetch() call to a
+   Netlify serverless function that calls the Anthropic API and returns
+   { reply: string, benefitIds: string[] }. Everything else (the panel,
+   the message bubbles, miniCardHTML) can stay exactly as is. */
+
+const categorySynonyms={
+  income:['money','income','paycheck','pay check','bills','broke','cash','afford','financial','severance','unemployment','loan','loans','debt'],
+  health:['health','insurance','doctor','medication','medicine','prescription','sick','coverage','hospital'],
+  family:['kids','children','child','family','food','groceries','hungry','feed','baby','pregnant'],
+  housing:['rent','housing','apartment','evict','eviction','landlord','utilities','electric','heat','energy','home'],
+  work:['job','work','resume','interview','career','training','skills','hire','employment'],
+  wellness:['stress','stressed','anxious','anxiety','depressed','depression','therapy','therapist','counseling','mental','overwhelmed','scared']
+};
+const idSynonyms={
+  ui:['unemployment benefits','file for unemployment','lost my job','laid off pay'],
+  snap:['food stamps','groceries','ebt','hungry','feed my family'],
+  wic:['pregnant','new mom','baby food','infant'],
+  chip:['kids health insurance','my children need insurance','child health coverage'],
+  cobra:['keep my insurance','same doctor','continue coverage'],
+  aca:['marketplace','obamacare','buy insurance'],
+  medicaid:['free health insurance','low income insurance'],
+  liheap:['electric bill','heating bill','power bill','cant pay utilities'],
+  rental:['rent','evicted','landlord','behind on rent','cant pay rent'],
+  pell:['go back to school','training program','learn new skill','retrain'],
+  ajc:['find a job','resume help','job search help'],
+  '988':['suicidal','want to die','kill myself','end it all','cant go on','hurt myself'],
+  'crisis-text':['suicidal','crisis','text line','want to die'],
+  openpath:['therapy','therapist','counseling','need to talk to someone'],
+  nami:['mental health support','peer support'],
+  'va-tap':['veteran job','military transition','veteran career'],
+  'va-health':['veteran health','va hospital','veteran doctor'],
+  'va-benefits':['veteran pay','disability check','veteran compensation'],
+  costplus:['cheap medication','affordable prescription'],
+  goodrx:['prescription discount','cheap prescription'],
+  alanon:["my spouse drinks",'family member addiction']
+};
+const crisisWords=['suicide','suicidal','kill myself','want to die','end it all','end my life',"can't go on",'cant go on','hurt myself','no reason to live'];
+
+function scoreBenefit(b,words){
+  let score=0;
+  const idWords=(idSynonyms[b.id]||[]).join(' ').toLowerCase();
+  const catWords=(categorySynonyms[b.cat]||[]).join(' ').toLowerCase();
+  const text=(b.title+' '+(b.sub||'')+' '+b.desc).toLowerCase();
+  words.forEach(w=>{
+    if(idWords.includes(w))score+=3;
+    if(catWords.includes(w))score+=2;
+    if(text.includes(w))score+=1;
+  });
+  return score;
+}
+function findMatches(query){
+  const words=query.toLowerCase().split(/\s+/).filter(w=>w.length>2);
+  return benefits.map(b=>({b,score:scoreBenefit(b,words)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,4).map(x=>x.b);
+}
+function isCrisis(query){
+  const q=query.toLowerCase();
+  return crisisWords.some(w=>q.includes(w));
+}
+function toggleHelper(){
+  const panel=document.getElementById('helperPanel');
+  const open=panel.style.display==='flex';
+  panel.style.display=open?'none':'flex';
+  if(!open)document.getElementById('helperInput').focus();
+}
+function appendHelperMsg(html,who){
+  const msgs=document.getElementById('helperMessages');
+  const div=document.createElement('div');
+  div.className='helper-msg helper-msg-'+who;
+  div.innerHTML=html;
+  msgs.appendChild(div);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+function escapeHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function miniCardHTML(b){
+  const state=document.getElementById('stateSelect').value;
+  return `<div class="helper-card"><div class="helper-card-title">${b.title}</div><div class="helper-card-desc">${b.desc}</div><a class="helper-card-link" href="${getLink(b,state)}" target="_blank" rel="noopener">${b.lt}</a></div>`;
+}
+function sendHelperMessage(){
+  const input=document.getElementById('helperInput');
+  const query=input.value.trim();
+  if(!query)return;
+  appendHelperMsg(escapeHtml(query),'user');
+  input.value='';
+  if(isCrisis(query)){
+    appendHelperMsg("That sounds really hard, and I'm glad you said something. Please reach out right now, you don't have to carry this alone.",'bot');
+    appendHelperMsg(benefits.filter(b=>b.id==='988'||b.id==='crisis-text').map(miniCardHTML).join(''),'bot');
+    return;
+  }
+  const matches=findMatches(query);
+  if(!matches.length){
+    appendHelperMsg("I couldn't find an exact match for that. Try a category above, or rephrase what you need, for example \"help with rent\" or \"job training.\"",'bot');
+    return;
+  }
+  appendHelperMsg("Here's what might help:",'bot');
+  appendHelperMsg(matches.map(miniCardHTML).join(''),'bot');
+}
+
+update();renderChecklist();
+</script>
+
+</body>
+</html>
