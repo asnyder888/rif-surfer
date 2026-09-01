@@ -5,9 +5,8 @@ permissions:
 
 on:
   schedule:
-    # Every Monday at 9am UTC
     - cron: '0 9 * * 1'
-  workflow_dispatch: {}   # lets you also run it manually from the Actions tab
+  workflow_dispatch: {}
 
 jobs:
   check-links:
@@ -17,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: Extract links from index.html
         run: node scripts/extract-links.js index.html scripts/links.json
@@ -25,26 +24,30 @@ jobs:
       - name: Check each link
         run: node scripts/check-links.js scripts/links.json scripts/results.json
 
-      - name: Open an issue if any links are broken
+      - name: Open an issue if any links are confirmed broken
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             const results = JSON.parse(fs.readFileSync('scripts/results.json', 'utf8'));
-            if (results.brokenCount === 0) {
-              console.log('All links OK, nothing to report.');
+            if (results.confirmedBroken.length === 0) {
+              console.log(`All clear. ${results.blocked.length} sites blocked the automated check (likely fine, not reported).`);
               return;
             }
             const body = [
               `Checked ${results.total} links on ${results.checkedAt}.`,
-              `${results.brokenCount} appear broken:`,
+              `${results.confirmedBroken.length} look genuinely broken (404, error, or other failure):`,
               '',
-              ...results.broken.map(b => `- **${b.id}**: ${b.url} (status: ${b.status ?? 'error: ' + b.error})`)
+              ...results.confirmedBroken.map(b => `- **${b.id}**: ${b.url} (status: ${b.status ?? 'error: ' + b.error})`),
+              '',
+              results.blocked.length
+                ? `${results.blocked.length} more sites blocked the automated checker (403/429). These are usually just bot protection and the page is probably fine, only worth checking by hand if one keeps showing up week after week: ${results.blocked.map(b => b.id).join(', ')}`
+                : ''
             ].join('\n');
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Broken benefit links found (${results.brokenCount})`,
+              title: `Broken benefit links found (${results.confirmedBroken.length})`,
               body,
               labels: ['broken-link']
             });
