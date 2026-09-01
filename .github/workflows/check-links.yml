@@ -1,5 +1,8 @@
 name: Check benefit links
 
+permissions:
+  issues: write
+
 on:
   schedule:
     # Every Monday at 9am UTC
