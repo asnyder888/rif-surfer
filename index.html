@@ -429,6 +429,10 @@ const benefits=[
 ];
 const checks=['File for unemployment insurance (do this first)','Note your official last day of employment','Elect COBRA or explore ACA coverage within 60 days','Check eligibility for SNAP, Medicaid, and CHIP','Update your LinkedIn profile and resume','Contact your local American Job Center for free help','Review any severance agreement carefully'];
 let activeTab='all',checked={};
+try{
+  const saved=localStorage.getItem('rifsurfer-checklist');
+  if(saved)checked=JSON.parse(saved);
+}catch(e){}
 function setTab(t,el){activeTab=t;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));el.classList.add('active');update();}
 function getLink(b,state){if(b.link&&b.link.startsWith('http'))return b.link;const s=state&&stateLinks[state]?state:'other';return stateLinks[s][b.link]||stateLinks['other'][b.link]||'#';}
 function cardHTML(b,state){return `<div class="benefit-card"><div class="card-top"><div class="card-icon"><i class="ti ${b.icon}" aria-hidden="true"></i></div><div><div class="card-title">${b.title}</div><div class="card-sub">${b.sub||''}</div></div></div><div class="badge-row">${b.urgent?'<span class="badge b-urgent">Act within 60 days</span>':''}${b.crisis?'<span class="badge b-crisis">Crisis support</span>':''}${b.community?'<span class="badge b-community">Community</span>':''}${b.fed?'<span class="badge b-federal">Federal</span>':''}${b.state?'<span class="badge b-state">State</span>':''}${b.free?'<span class="badge b-free">Free</span>':''}</div><div class="card-desc">${b.desc}</div><a class="card-link" href="${getLink(b,state)}" target="_blank" rel="noopener" aria-label="${b.lt.replace('→','').trim()} — ${b.title}">${b.lt}</a></div>`;}
@@ -454,7 +458,11 @@ function renderChecklist(){
   document.getElementById('allDone').style.display=done===checks.length?'block':'none';
   document.getElementById('checkItems').innerHTML=checks.map((c,i)=>`<div class="check-item" onclick="toggleCheck(${i})"><div class="check-box${checked[i]?' done':''}">${checked[i]?'<i class="ti ti-check" aria-hidden="true" style="font-size:11px;color:#fff;"></i>':''}</div><span class="check-label${checked[i]?' done':''}">${c}</span></div>`).join('');
 }
-function toggleCheck(i){checked[i]=!checked[i];renderChecklist();}
+function toggleCheck(i){
+  checked[i]=!checked[i];
+  try{localStorage.setItem('rifsurfer-checklist',JSON.stringify(checked));}catch(e){}
+  renderChecklist();
+}
 
 /* ---------- AI helper (local smart search, no API needed) ----------
    To upgrade later to a real Claude-powered chat: keep everything below,
