@@ -192,6 +192,29 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
   /* crisis banner */
   .crisis-banner{font-size:12px;}
 }
+
+/* ---------- Sticky state bar and category pills ---------- */
+:root{--bar-h:68px;}
+/* The title block scrolls away normally. Only the state bar below it is pinned,
+   so the page height never changes while scrolling (no jumping on phones). */
+.hero .hero-inner{padding-bottom:0;}
+.hero-tagline{margin-bottom:1rem;}
+.hero-bar{background:var(--govuk-blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.hero-bar-inner{max-width:900px;margin:0 auto;padding:12px 1.5rem 16px;}
+/* Category pills pin directly under the state bar */
+.tab-pills{display:flex;flex-wrap:wrap;gap:5px;}
+.tab{flex-shrink:0;}
+.tabs{position:sticky;top:var(--bar-h);z-index:90;background:var(--govuk-bg);padding:8px 0;margin-bottom:0.5rem;}
+/* Keep "Find My Benefits" scrolling from landing under the pinned bar */
+.inner{scroll-margin-top:calc(var(--bar-h) + 8px);}
+@media(max-width:600px){
+.hero-bar-inner{padding:10px 1rem 12px;}
+/* On phones only the pills pin; the pills become one swipeable row and search scrolls away */
+.tabs{display:contents;}
+.tab-pills{position:sticky;top:var(--bar-h);z-index:90;background:var(--govuk-bg);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:8px 1rem;}
+.tab-pills::-webkit-scrollbar{display:none;}
+.tab-search{margin:4px 1rem 1rem;width:auto;}
+}
 </style>
 <script defer data-domain="rifsurfer.com" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -201,6 +224,8 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
   <div class="hero-eyebrow">Layoff support tool</div>
   <h1>RIF Surfer.</h1>
   <p class="hero-tagline">Benefits and support available to you <strong>right now</strong>, by state.</p>
+</div></div>
+<div class="hero-bar"><div class="hero-bar-inner">
   <div class="hero-state">
     <label for="stateSelect" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Select your state</label>
     <select id="stateSelect" onchange="update()" aria-label="Select your state" autocomplete="off">
@@ -266,6 +291,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
 
 <h2 class="state-heading" id="stateHeading" style="display:none;"></h2>
 <div class="tabs" style="align-items:center;">
+  <div class="tab-pills">
   <button class="tab active" onclick="setTab('all',this)">All</button>
   <button class="tab" onclick="setTab('income',this)">Income</button>
   <button class="tab" onclick="setTab('health',this)">Health</button>
@@ -273,6 +299,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
   <button class="tab" onclick="setTab('housing',this)">Housing</button>
   <button class="tab" onclick="setTab('work',this)">Job search</button>
   <button class="tab" onclick="setTab('wellness',this)">Wellness</button>
+  </div>
   <div class="tab-search-spacer"></div>
   <div class="tab-search">
     <input type="text" id="searchInput" placeholder="Search..." oninput="update()" class="tab-search-input" />
@@ -565,6 +592,20 @@ function sendHelperMessage(){
 
 update();renderChecklist();
 </script>
+
+<script>
+/* Measure the pinned state bar so the category pills sit right under it */
+(function(){
+  var bar=document.querySelector('.hero-bar');
+  if(!bar)return;
+  function set(){document.documentElement.style.setProperty('--bar-h',bar.offsetHeight+'px');}
+  set();
+  window.addEventListener('resize',set);
+  window.addEventListener('load',set);
+  if(window.ResizeObserver)new ResizeObserver(set).observe(bar);
+})();
+</script>
+
 
 </body>
 </html>
