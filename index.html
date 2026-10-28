@@ -193,33 +193,34 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
   .crisis-banner{font-size:12px;}
 }
 
-/* ---------- Sticky state bar and category pills ---------- */
-:root{--bar-h:68px;}
-/* The title block scrolls away normally. Only the state bar below it is pinned,
-   so the page height never changes while scrolling (no jumping on phones). */
+/* ---------- Pinned state bar ---------- */
+:root{--bar-h:68px;--strip-h:38px;}
+/* The title block scrolls away normally. Only the state bar below it stays pinned. */
 .hero .hero-inner{padding-bottom:1rem;}
 .hero-tagline{margin-bottom:0;}
-.hero-bar{background:var(--govuk-blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18);}
+.hero-bar{background:var(--govuk-blue);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.18);transition:top .2s ease;}
 .hero-bar-inner{max-width:900px;margin:0 auto;padding:12px 1.5rem 16px;}
-/* Category pills pin directly under the state bar */
-.tab-pills{display:flex;flex-wrap:wrap;gap:5px;}
-.tab{flex-shrink:0;}
-.tabs{position:sticky;top:var(--bar-h);z-index:90;background:var(--govuk-bg);padding:8px 0;margin-bottom:0.5rem;}
 /* Keep "Find My Benefits" scrolling from landing under the pinned bar */
-.inner{scroll-margin-top:calc(var(--bar-h) + 8px);}
+.inner{scroll-margin-top:calc(var(--bar-h) + var(--strip-h) + 8px);}
+/* Slim brand strip: slides in at the very top once the big title has scrolled away,
+   and the state bar settles right underneath it. It is fixed, so it never shifts the page. */
+.brand-strip{position:fixed;top:0;left:0;right:0;height:var(--strip-h);background:var(--govuk-blue);z-index:101;transform:translateY(-100%);transition:transform .2s ease;cursor:pointer;}
+.brand-strip-inner{max-width:900px;margin:0 auto;height:100%;padding:0 1.5rem;display:flex;align-items:center;gap:12px;}
+.brand-strip-name{color:#fff;font-weight:800;font-size:20px;line-height:1;letter-spacing:-0.01em;}
+.brand-strip-tag{color:#D4E6F5;font-size:10px;line-height:1;letter-spacing:0.14em;text-transform:uppercase;font-weight:700;position:relative;top:2px;}
+html.brand-pinned .brand-strip{transform:none;}
+html.brand-pinned .hero-bar{top:var(--strip-h);}
 @media(max-width:600px){
 .hero-bar-inner{padding:10px 1rem 12px;}
-/* On phones only the pills pin; the pills become one swipeable row and search scrolls away */
-.tabs{display:contents;}
-.tab-pills{position:sticky;top:var(--bar-h);z-index:90;background:var(--govuk-bg);flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:8px 1rem;}
-.tab-pills::-webkit-scrollbar{display:none;}
-.tab-search{margin:4px 1rem 1rem;width:auto;}
+.brand-strip-inner{padding:0 1rem;}
 }
+@media(prefers-reduced-motion:reduce){.brand-strip,.hero-bar{transition:none;}}
 </style>
 <script defer data-domain="rifsurfer.com" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 <main>
+<div class="brand-strip" aria-hidden="true" onclick="window.scrollTo({top:0,behavior:'smooth'})"><div class="brand-strip-inner"><span class="brand-strip-name">RIF Surfer.</span><span class="brand-strip-tag">Layoff support tool</span></div></div>
 <div class="hero"><div class="hero-inner">
   <div class="hero-eyebrow">Layoff support tool</div>
   <h1>RIF Surfer.</h1>
@@ -291,7 +292,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
 
 <h2 class="state-heading" id="stateHeading" style="display:none;"></h2>
 <div class="tabs" style="align-items:center;">
-  <div class="tab-pills">
   <button class="tab active" onclick="setTab('all',this)">All</button>
   <button class="tab" onclick="setTab('income',this)">Income</button>
   <button class="tab" onclick="setTab('health',this)">Health</button>
@@ -299,7 +299,6 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--govuk-bg);color
   <button class="tab" onclick="setTab('housing',this)">Housing</button>
   <button class="tab" onclick="setTab('work',this)">Job search</button>
   <button class="tab" onclick="setTab('wellness',this)">Wellness</button>
-  </div>
   <div class="tab-search-spacer"></div>
   <div class="tab-search">
     <input type="text" id="searchInput" placeholder="Search..." oninput="update()" class="tab-search-input" />
@@ -428,7 +427,7 @@ const stateNames={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'Califo
 const catMeta={income:{label:'Income support',desc:'Replace lost wages and manage existing financial obligations.'},health:{label:'Healthcare',desc:'Keep your coverage or find affordable options right away.'},family:{label:'Family and food',desc:'Food assistance and health coverage for your household.'},housing:{label:'Housing and utilities',desc:'Help with rent, energy bills, and keeping a roof over your head.'},work:{label:'Job search',desc:'Free tools, training, and community to help you find work.'},wellness:{label:'Wellness and mental health',desc:'Job loss is hard. Free and low-cost support for when you need it.'}};
 const catOrder=['income','health','family','housing','work','wellness'];
 const benefits=[
-  {id:'ui',cat:'income',title:'Unemployment Insurance',sub:'Unemployment Insurance',icon:'ti-cash',urgent:true,state:true,desc:'Replace a portion of lost wages while you search. File within days of your last day. Most states allow one week retroactive. Severance does NOT disqualify you — apply anyway.',link:'ui',lt:'File now →'},
+  {id:'ui',cat:'income',title:'Unemployment Insurance',sub:'Unemployment Insurance',icon:'ti-cash',urgent:true,state:true,desc:'Replace a portion of lost wages while you search. File within days of your last day. Most states allow one week retroactive. Severance does NOT disqualify you — apply anyway. Taking a voluntary buyout or exit package? Rules for voluntary separations differ from layoffs and vary by state, so check with your state agency before you accept.',link:'ui',lt:'File now →'},
   {id:'loans',cat:'income',title:'Student loan income-driven plans',sub:'',icon:'ti-credit-card',fed:true,free:true,desc:'Federal student loans can go to $0 per month when unemployed. Use the SAVE plan calculator or call your servicer.',link:'https://studentaid.gov/manage-loans/repayment/plans/income-driven',lt:'Explore IDR plans →'},
   {id:'costplus',cat:'health',title:'Cost Plus Drugs',sub:'Affordable prescriptions',icon:'ti-pill',free:true,desc:'Mark Cuban\'s pharmacy sells generic medications at cost plus 15%. Dramatically cheaper than retail for hundreds of common drugs. No insurance needed.',link:'https://costplusdrugs.com',lt:'Browse medications →'},
   {id:'goodrx',cat:'health',title:'GoodRx',sub:'Free prescription discount card',icon:'ti-receipt',free:true,desc:'Free discount card accepted at nearly every pharmacy. Can reduce prescription costs by up to 80%. Works with or without insurance.',link:'https://www.goodrx.com',lt:'Get free card →'},
@@ -507,7 +506,7 @@ const categorySynonyms={
   wellness:['stress','stressed','anxious','anxiety','depressed','depression','therapy','therapist','counseling','mental','overwhelmed','scared']
 };
 const idSynonyms={
-  ui:['unemployment benefits','file for unemployment','lost my job','laid off pay'],
+  ui:['unemployment benefits','file for unemployment','lost my job','laid off pay','buyout','voluntary exit','voluntary separation'],
   snap:['food stamps','groceries','ebt','hungry','feed my family'],
   wic:['pregnant','new mom','baby food','infant'],
   chip:['kids health insurance','my children need insurance','child health coverage'],
@@ -603,6 +602,23 @@ update();renderChecklist();
   window.addEventListener('resize',set);
   window.addEventListener('load',set);
   if(window.ResizeObserver)new ResizeObserver(set).observe(bar);
+})();
+
+/* Show the slim brand strip once the big title has scrolled out of view.
+   Two thresholds so it never flickers right at the edge. */
+(function(){
+  var h1=document.querySelector('.hero h1');
+  if(!h1)return;
+  var root=document.documentElement,on=false,ticking=false;
+  function check(){
+    var bottom=h1.getBoundingClientRect().bottom;
+    if(!on&&bottom<=0){root.classList.add('brand-pinned');on=true;}
+    else if(on&&bottom>12){root.classList.remove('brand-pinned');on=false;}
+    ticking=false;
+  }
+  window.addEventListener('scroll',function(){if(!ticking){window.requestAnimationFrame(check);ticking=true;}},{passive:true});
+  window.addEventListener('resize',check);
+  check();
 })();
 </script>
 
